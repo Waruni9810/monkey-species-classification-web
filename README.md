@@ -90,8 +90,8 @@ Download it (https://www.kaggle.com/datasets/slothkong/10-monkey-species).
 
 ## Deployment
 
-The application is deployed on Streamlit Cloud. Access it (https://monkey-species-classification-t2ry5uyn3qywxrpmm5n2rj.streamlit.app/).
+The application is deployed on Streamlit Cloud. Access it (https://monkey-species-classification-webapp-gzskggtkrxfnqgtnbeggtf.streamlit.app/).
 
 ## Repository
 
-GitHub Repository: [Monkey Species Classification](https://github.com/WaruniR98/monkey-species-classification)
+GitHub Repository: [Monkey Species Classification](https://github.com/Waruni9810/monkey-species-classification-webapp)
