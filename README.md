@@ -81,7 +81,7 @@ The following monkey species are included in the classification model:
 
 ![Training the Model](https://github.com/user-attachments/assets/cecf05b1-6117-4146-b8a2-33b24456f82f)
 ![Verification the Model](https://github.com/user-attachments/assets/b9a7a656-3901-4c5f-bd87-4cfc2c955f7c)
-![Classifying an Image](https://github.com/user-attachments/assets/9b5da930-c498-40b9-8017-e68ba4b66582)
+![Classifying an Image](https://github.com/user-attachments/assets/c8ffcc4d-5ba6-4ade-8eb7-a61a9f526901)
 ![Classifying an Image2](https://github.com/user-attachments/assets/4ca360f7-c4c2-4c61-939f-dbfbeda19836)
 
 ## Kaggle Dataset
