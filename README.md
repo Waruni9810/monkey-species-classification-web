@@ -84,11 +84,6 @@ The following monkey species are included in the classification model:
 ![Classifying an Image](screenshots/classifying_image.png)
 ![Classifying an Image2](screenshots/classifying_image2.png)
 
-![Training the Model](https://github.com/Waruni9810/monkey-species-classification-webapp/blob/main/screenshots/Training2_image.png)
-![Verification the Model](https://github.com/Waruni9810/monkey-species-classification-webapp/blob/main/screenshots/Training1_image.png)
-![Classifying an Image](https://github.com/Waruni9810/monkey-species-classification-webapp/blob/main/screenshots/classifying_image.png)
-![Classifying an Image2](https://github.com/Waruni9810/monkey-species-classification-webapp/blob/main/screenshots/classifying_image2.png)
-
 ## Kaggle Dataset
 
 Download it (https://www.kaggle.com/datasets/slothkong/10-monkey-species).
