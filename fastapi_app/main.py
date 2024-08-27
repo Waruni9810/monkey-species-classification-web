@@ -1,63 +1,55 @@
-import tensorflow as tf
-import numpy as np
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, UploadFile
 from pydantic import BaseModel
-from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from io import BytesIO
+from PIL import Image
+import numpy as np
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.image import img_to_array
 
 app = FastAPI()
 
-class ImagePath(BaseModel):
-    image_path: str
+# Load your trained model
+model = load_model('../monkey_species_model.keras')
 
-# Load the trained model
-model = tf.keras.models.load_model('../monkey_species_model.keras')
+class PredictionResult(BaseModel):
+    message: str
+    species: str = None
+    confidence: float = None
 
-# List of monkey species corresponding to the model's output
-monkey_species = [
-    "Alouatta palliata (The Mantled Howler)",
-    "Erythrocebus patas (Patas Monkey)",
-    "Cacajao calvus (Bald Uakari)",
-    "Macaca fuscata (Japanese Macaque)",
-    "Cebuella pygmaea (Pygmy Marmoset)",
-    "Cebus capucinus (White-headed Capuchin)",
-    "Mico argentatus (Silvery Marmoset)",
-    "Saimiri sciureus (Common Squirrel Monkey)",
-    "Aotus nigriceps (Night Monkey)",
-    "Trachypithecus johnii (Nilgiri Langur)"
-]
+@app.post("/predict/", response_model=PredictionResult)
+async def predict(file: UploadFile = File(...)):
+    # Load and preprocess the image
+    image = Image.open(BytesIO(await file.read()))
+    image = image.resize((150, 150))  # Resize to match model input
+    img_array = img_to_array(image)
+    img_array = np.expand_dims(img_array, axis=0) / 255.0  # Preprocess the image
 
-# Set a confidence threshold to determine if the image does not belong to any species
-CONFIDENCE_THRESHOLD = 0.6
+    # Make prediction
+    predictions = model.predict(img_array)
+    predicted_class = np.argmax(predictions[0])
+    confidence = np.max(predictions[0])
 
-def predict_species(image_path: str):
-    try:
-        img = load_img(image_path, target_size=(150, 150))  # Resize image
-        img_array = img_to_array(img)  # Convert image to array
-        img_array = np.expand_dims(img_array, axis=0)  # Expand dimensions
+    # Threshold for considering a valid prediction
+    confidence_threshold = 0.5
 
-        # Normalize pixel values (important if your model expects values in range [0, 1])
-        img_array = img_array / 255.0
+    # Map class indices to actual monkey names
+    species_info = [
+        "Alouatta palliata (The Mantled Howler)",
+        "Erythrocebus patas (Patas Monkey)",
+        "Cacajao calvus (Bald Uakari)",
+        "Macaca fuscata (Japanese Macaque)",
+        "Cebuella pygmaea (Pygmy Marmoset)",
+        "Cebus capucinus (White-headed Capuchin)",
+        "Mico argentatus (Silvery Marmoset)",
+        "Saimiri sciureus (Common Squirrel Monkey)",
+        "Aotus nigriceps (Night Monkey)",
+        "Trachypithecus johnii (Nilgiri Langur)"
+    ]
 
-        # Get raw predictions
-        predictions = model.predict(img_array)
+    if confidence < confidence_threshold:
+        return PredictionResult(message="The uploaded image is not of a monkey that belongs to the 10 species. Try again.")
+    
+    species = species_info[predicted_class] if predicted_class < len(species_info) else "Unknown"
+    
+    return PredictionResult(message="Prediction successful.", species=species, confidence=float(confidence))
 
-        # Apply softmax to get probabilities (if not included in your model)
-        predictions = tf.nn.softmax(predictions[0]).numpy()
-
-        # Get the index of the highest probability
-        predicted_index = np.argmax(predictions)
-        predicted_confidence = predictions[predicted_index]
-        
-        # Check if the confidence is above the threshold
-        if predicted_confidence < CONFIDENCE_THRESHOLD:
-            return "The uploaded image is not of a monkey that belongs to the 10 species. Try again."
-        
-        predicted_species = monkey_species[predicted_index]
-        return predicted_species
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-
-@app.post("/predict")
-async def predict(image: ImagePath):
-    predicted_species = predict_species(image.image_path)
-    return {"predicted_species": predicted_species}
