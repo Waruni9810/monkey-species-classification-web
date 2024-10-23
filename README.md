@@ -89,10 +89,6 @@ The following monkey species are included in the classification model:
 
 Download it (https://www.kaggle.com/datasets/slothkong/10-monkey-species).
 
-## Deployment
-
-The application is deployed on Streamlit Cloud. Access it (https://monkey-species-classification-webapp-gzskggtkrxfnqgtnbeggtf.streamlit.app/).
-
 ## Repository
 
 GitHub Repository: [Monkey Species Classification](https://github.com/Waruni9810/monkey-species-classification-webapp)
